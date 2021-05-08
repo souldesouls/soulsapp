@@ -40,13 +40,14 @@ class BotWebView extends StatelessWidget {
 
   // flutter->ios(swift) (used to load the TrueEntropy Camera RNG view controller)
   Future<void> _navToCamRNG() async {
+    print("loading CamRNG");
     try {
       if (Platform.isAndroid) {
         // Flutter->Android (Java/Kotlin) (used to load an implementation of awasisto's camrng - https://github.com/awasisto/camrng/)
         await platform.invokeMethod('gotoCameraRNG', 256);
       } else if (Platform.isIOS) {
         // Flutter->Android (Swift) (used to load the a camrng implementation done with vault12's TrueEntropy - https://github.com/vault12/TrueEntropy)
-        await platform.invokeMethod('goToTrueEntropy', );
+        await platform.invokeMethod('goToTrueEntropy', 256);
       }
     } on PlatformException catch (e) {
       print("Failed to load CamRNG: '${e.message}'.");
@@ -88,10 +89,10 @@ class BotWebView extends StatelessWidget {
   // ios(swift)->flutter (used as a callback so we are given the GID of entropy generated and uploaded to the libwrapper)
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
-      case "gid":
+      case "entropy":
         debugPrint(call.arguments);
         // flutter->javascript (send to bot the gid)
-        webView.evaluateJavascript('sendGidToBot("${call.arguments}");');
+        webView.evaluateJavascript('sendEntropyFromYourSoul("${call.arguments}");');
         return new Future.value("");
     }
   }
@@ -101,8 +102,8 @@ class BotWebView extends StatelessWidget {
   }
 
   _initWebBot() async {
-    String udid = "TODO:UDIDHERE";
-    webView.evaluateJavascript('initWebBot("${udid}");');
+    // String udid = "TODO:UDIDHERE";
+    // webView.evaluateJavascript('initWebBot("${udid}");');
   }
 
   _initPushNotifications() async {

@@ -185,48 +185,48 @@ class GenerationController: UIViewController, CameraFramesDelegate, UITableViewD
             return
         }
 
-        let timestamp = Int64(NSDate().timeIntervalSince1970)
-
-        let params = ["size": entropy.count * 2,
-                      "raw": "true",
-                      "timestamp": timestamp * 1000,
-                      "entropy": entropy.map { String(format: "%02x", $0) }.joined()
-            ] as Dictionary<String, AnyObject>
-        
-        var request = URLRequest(url: URL(string: "https://devapp.souls.energy/setentropy")!)
-        request.httpMethod = "POST"
-        request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let session = URLSession.shared
-        let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
-            
-            if error != nil {
-                print(error!)
-            } else {
-                do {
-                    let json = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
-                    //print(json)
-                    print("uploaded entropy to libwrapper API")
-                    
+//         let timestamp = Int64(NSDate().timeIntervalSince1970)
+//
+//         let params = ["size": entropy.count * 2,
+//                       "raw": "true",
+//                       "timestamp": timestamp * 1000,
+//                       "entropy": entropy.map { String(format: "%02x", $0) }.joined()
+//             ] as Dictionary<String, AnyObject>
+//
+//         var request = URLRequest(url: URL(string: "https://devapp.souls.energy/setentropy")!)
+//         request.httpMethod = "POST"
+//         request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+//         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+//
+//         let session = URLSession.shared
+//         let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+//
+//             if error != nil {
+//                 print(error!)
+//             } else {
+//                 do {
+//                     let json = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+//                     //print(json)
+//                     print("uploaded entropy to libwrapper API")
+//
                     DispatchQueue.main.async {
                         // send gid back to flutter to send to bot via javascript layer
-                        self.channel?.invokeMethod("gid", arguments: json["Gid"])
+                        self.channel?.invokeMethod("entropy", arguments: entropy.map { String(format: "%02x", $0) }.joined())
                         
                         // go back to flutter
                         self.coordinatorDelegate?.navigateToFlutter()
                     }
-                } catch {
-                    if let returnData = String(data: data!, encoding: .utf8) {
-                        print(returnData)
-                    } else {
-                        print("invalid response")
-                    }
-                }
-            }
-        })
+//                 } catch {
+//                     if let returnData = String(data: data!, encoding: .utf8) {
+//                         print(returnData)
+//                     } else {
+//                         print("invalid response")
+//                     }
+//                 }
+//             }
+//         })
         
-        task.resume()
+//         task.resume()
     }
     
     func uploadEntropy(entropy: [UInt8], blockNumber: Int) {
@@ -365,7 +365,6 @@ class GenerationController: UIViewController, CameraFramesDelegate, UITableViewD
         
         // by soliax
         // go back to flutter
-        self.channel?.invokeMethod("gid", arguments: "Cancel")
         self.coordinatorDelegate?.navigateToFlutter()
     }
 }
