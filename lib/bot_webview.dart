@@ -39,14 +39,14 @@ class BotWebView extends StatelessWidget {
   static const platform = const MethodChannel('energy.souls.app');
 
   // flutter->ios(swift) (used to load the TrueEntropy Camera RNG view controller)
-  Future<void> _navToCamRNG(int bytesNeeded) async {
+  Future<void> _navToCamRNG() async {
     try {
       if (Platform.isAndroid) {
         // Flutter->Android (Java/Kotlin) (used to load an implementation of awasisto's camrng - https://github.com/awasisto/camrng/)
-        await platform.invokeMethod('gotoCameraRNG', bytesNeeded * 2);
+        await platform.invokeMethod('gotoCameraRNG', 256);
       } else if (Platform.isIOS) {
         // Flutter->Android (Swift) (used to load the a camrng implementation done with vault12's TrueEntropy - https://github.com/vault12/TrueEntropy)
-        await platform.invokeMethod('goToTrueEntropy', bytesNeeded);
+        await platform.invokeMethod('goToTrueEntropy', );
       }
     } on PlatformException catch (e) {
       print("Failed to load CamRNG: '${e.message}'.");
@@ -303,10 +303,9 @@ class BotWebView extends StatelessWidget {
             javascriptMode: JavascriptMode.unrestricted,
             javascriptChannels: Set.from([
               JavascriptChannel(
-                  name: 'flutterChannel_loadCamRNGWithBytesNeeded',
+                  name: 'flutterChannel_loadCamRNG',
                   onMessageReceived: (JavascriptMessage message) {
-                    _navToCamRNG(int.parse(message
-                        .message)); // open swift TrueEntropy Camera RNG view
+                    _navToCamRNG(); // open swift TrueEntropy Camera RNG view
                   }),
               JavascriptChannel(
                   name: 'flutterChannel_loadNativeShop',
