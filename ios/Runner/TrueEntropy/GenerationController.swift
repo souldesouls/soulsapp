@@ -369,7 +369,7 @@ class GenerationController: UIViewController, CameraFramesDelegate, UITableViewD
         
         // by soliax
         // go back to flutter
-        self.channel?.invokeMethod("gid", arguments: "Cancel")
+        self.channel?.invokeMethod("entropy", arguments: "Cancel")
         self.coordinatorDelegate?.navigateToFlutter()
     }
 }
