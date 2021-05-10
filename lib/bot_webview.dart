@@ -297,9 +297,9 @@ class BotWebView extends StatelessWidget {
     platform.setMethodCallHandler(
         _handleMethod); // for handling javascript->flutter callbacks
     return Scaffold(
-//        appBar: AppBar(
-//          title: Text("Souls"),
-//        ),
+       appBar: AppBar(
+         title: Text("Souls"),
+       ),
         body: WebView(
             initialUrl: botUrl,
             javascriptMode: JavascriptMode.unrestricted,
