@@ -29,9 +29,13 @@ class GenerationController: UIViewController, CameraFramesDelegate, UITableViewD
     var stats = ["TIME ELAPSED",
                  "BYTES IN BUFFER",
                  "ENTROPY GENERATED",
-                 "χ² OF LAST BLOCK",
-                 "REJECTED FRAMES",
-                 "OVERSATURATED"]
+//                 "χ² OF LAST BLOCK",
+//                 "REJECTED FRAMES",
+//                 "OVERSATURATED"
+                 "",
+                 "",
+                 ""
+                ]
     
     // for loading TrueEntropy view (soliax) (https://medium.com/@cosinus84/flutter-view-controller-used-in-ios-app-using-coordinator-pattern-8896339d64ba)
     var coordinatorDelegate: TrueEntropyCoordinatorDelegate?
@@ -149,22 +153,22 @@ class GenerationController: UIViewController, CameraFramesDelegate, UITableViewD
         
         // Row 3: χ²
         if col!.lastChi > 0 {
-            updateValue(row: 3, val: String(format:"%.2f",  col!.lastChi))
+//            updateValue(row: 3, val: String(format:"%.2f",  col!.lastChi))
         }
         
         // Highlight if χ² is over limit
-        let x2valueLabel = self.settingsTable.cellForRow(at: IndexPath(row: 3, section: 0))?.detailTextLabel
-        if defaults.bool(forKey: "x2_limit_enabled") && (col!.lastChi > defaults.double(forKey: "x2_limit")) {
-            x2valueLabel?.textColor = Constants.warningColor
-        } else {
-            x2valueLabel?.textColor = Constants.mainColor
-        }
+//        let x2valueLabel = self.settingsTable.cellForRow(at: IndexPath(row: 3, section: 0))?.detailTextLabel
+//        if defaults.bool(forKey: "x2_limit_enabled") && (col!.lastChi > defaults.double(forKey: "x2_limit")) {
+//            x2valueLabel?.textColor = Constants.warningColor
+//        } else {
+//            x2valueLabel?.textColor = Constants.mainColor
+//        }
         
         // Row 4: Number of frames we reject due to too high mean (i.e camera movement)
-        updateValue(row: 4, val: localized(col!.rejectedFrames))
+//        updateValue(row: 4, val: localized(col!.rejectedFrames))
         
         // Row 5: Corrupt pixels
-        updateValue(row: 5, val: String(format:"%.2f%%",  col!.corruptPixels))
+//        updateValue(row: 5, val: String(format:"%.2f%%",  col!.corruptPixels))
     }
     
     func bytesConvertToHexstring(byte : [UInt8]) -> String {
