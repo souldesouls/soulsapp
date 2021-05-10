@@ -289,7 +289,8 @@ class BotWebView extends StatelessWidget {
   Widget build(BuildContext context) {
     this.context = context;
 
-    var botUrl = "https://devapp.souls.energy/";
+    var botUrl = "https://app.souls.energy/";
+    // var botUrl = "http://192.168.44.5/";
 
     // _initIAP();
 
