@@ -37,7 +37,7 @@ class MyCamRngFragment : Fragment(), SurfaceHolder.Callback, Handler.Callback {
     private lateinit var mSurfaceView: SurfaceView;
     private lateinit var mSurfaceHolder: SurfaceHolder;
 
-    private var entropyneeded = 0;
+    private var entropyneeded = 256;
     private var MSG_SURFACE_READY = 2
     private var mSurfaceCreated = true
     private var mHandler = Handler(this)
@@ -52,12 +52,12 @@ class MyCamRngFragment : Fragment(), SurfaceHolder.Callback, Handler.Callback {
         rootView = inflater.inflate(R.layout.dialog_camrng, container,false)
 
         //Set entropy left from entropy given
-        val bundle = this.arguments
-        if (bundle != null) {
-            entropyneeded = bundle.getInt("bytesNeeded", 0)
-        }
+//        val bundle = this.arguments
+//        if (bundle != null) {
+//            entropyneeded = bundle.getInt("bytesNeeded", 256)
+//        }
 
-        rootView.entropyLeftTextView.text = entropyneeded.toString();
+//        rootView.entropyLeftTextView.text = entropyneeded.toString();
 
         return rootView
     }
@@ -68,7 +68,7 @@ class MyCamRngFragment : Fragment(), SurfaceHolder.Callback, Handler.Callback {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun setupRngAndViews() {
+    private fun  setupRngAndViews() {
         mSurfaceView = surfaceViewCAM;
         mSurfaceHolder = mSurfaceView.getHolder();
         mSurfaceHolder.addCallback(this);
@@ -89,8 +89,8 @@ class MyCamRngFragment : Fragment(), SurfaceHolder.Callback, Handler.Callback {
                 camRng = NoiseBasedCamRng.newInstance(context = requireContext());
 
                 //Set TextView in view
-                entropyLeftTextView.text = entropyneeded.toString()
-                usedPixelsTextView.text = NoiseBasedCamRng.getNumberOfPixelsInUse().toString()
+//                entropyLeftTextView.text = entropyneeded.toString()
+//                usedPixelsTextView.text = NoiseBasedCamRng.getNumberOfPixelsInUse().toString()
 
                 //Start timer
                 timeLapsedCmTimer.start()
@@ -100,7 +100,7 @@ class MyCamRngFragment : Fragment(), SurfaceHolder.Callback, Handler.Callback {
 
                 //Set cancel button
                 camRNGCancelButton.setOnClickListener {
-                    SM?.sendEntropyObj(0, 0.toString())
+                    SM?.sendEntropyObj(0, "Cancel")
                     compositeDisposable.dispose()
                 }
 
@@ -110,22 +110,22 @@ class MyCamRngFragment : Fragment(), SurfaceHolder.Callback, Handler.Callback {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe {
                                     bytes += it.toByte()
-                                    bytesInBufferTextView.text = bytes.size.toString()
-                                    entropyGeneratedTextView.text = ((bytes.size) * 2).toString()
+//                                    bytesInBufferTextView.text = bytes.size.toString()
+//                                    entropyGeneratedTextView.text = ((bytes.size) * 2).toString()
 
                                     // Rough progress until finish entropy generation
-                                    val progress = ((bytes.size)*2).toDouble()/(entropyneeded)*100
+                                    val progress = bytes.size.toDouble()/entropyneeded*100
                                     etaRemaining.text = "%.0f".format(progress) + "%"
 
-                                    if(bytes.size*2 >= entropyneeded){
-                                        val sb = StringBuilder(bytes.size * 2)
+                                    if(bytes.size >= entropyneeded){
+                                        val sb = StringBuilder()
                                         for (b in bytes) {
                                             sb.append(String.format("%02x", b))
                                         }
                                         compositeDisposable.dispose()
 
                                         //Send message to main activity and launch Soulsfragment
-                                        SM?.sendEntropyObj(entropyneeded, sb.toString().substring(0,entropyneeded))
+                                        SM?.sendEntropyObj(entropyneeded, sb.toString())
                                     }
                                 }
                 )

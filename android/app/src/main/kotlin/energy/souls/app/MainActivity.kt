@@ -57,7 +57,7 @@ class MainActivity: FlutterActivity() {
                 val channel = MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, "energy.souls.app")
 
                 // Cancel - sending "Cancel" to bot causes it to go back to main menu
-                channel.invokeMethod("gid", "Cancel")
+                channel.invokeMethod("entropy", "Cancel")
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -71,17 +71,18 @@ class MainActivity: FlutterActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d("CamRNG", "got entropy result");
         if (requestCode == REQUEST_CAMRNG) {
             val channel = MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, "energy.souls.app")
 
             if (resultCode == Activity.RESULT_OK) {
-                val gid = data?.getStringExtra("gid")
-                channel.invokeMethod("gid", gid)
+                val entropy = data?.getStringExtra("entropy")
+                channel.invokeMethod("entropy", entropy)
             }
             else
             {
                 // Cancel - sending "Cancel" to bot causes it to go back to main menu
-                channel.invokeMethod("gid", "Cancel")
+                channel.invokeMethod("entropy", "Cancel")
             }
         }
     }
